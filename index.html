@@ -11,7 +11,14 @@
 <header><div class="logo">PDFReady</div><div class="small" style="color:#cbd5e1">Free PDF tools</div></header>
 <div class="wrap"><section class="hero"><h1>All your PDF tools in one place</h1><p>Fast, simple browser-based document tools.</p></section>
 <div class="tabs">
-<button class="tab active" data-tool="compress">Compress</button><button class="tab" data-tool="merge">Merge</button><button class="tab" data-tool="split">Split</button><button class="tab" data-tool="jpgpdf">JPG → PDF</button><button class="tab" data-tool="pdfjpg">PDF → JPG</button><button class="tab" data-tool="imagekb">Photo KB</button>
+<button class="tab active" data-tool="compress">Compress</button>
+<button class="tab" data-tool="merge">Merge</button>
+<button class="tab" data-tool="split">Split</button>
+<a class="tab" href="./jpg-to-pdf.html">JPG → PDF</a>
+<button class="tab" data-tool="pdfjpg">PDF → JPG</button>
+<a class="tab" href="./photo-to-50kb.html">Photo 50KB</a>
+<a class="tab" href="./signature-to-20kb.html">Signature 20KB</a>
+<a class="tab" href="./compress-pdf-to-100kb.html">PDF 100KB</a>
 </div>
 <div class="panel">
 <div id="compress" class="tool"><h2>Compress PDF</h2><label class="drop" for="compressFile"><div style="font-size:42px">📄</div><b id="compressName">Choose PDF</b><div class="small">For target-size compression, pages are rebuilt as images.</div></label><input id="compressFile" type="file" accept="application/pdf"><div class="row"><button class="secondary target active" data-kb="100">100 KB</button><button class="secondary target" data-kb="200">200 KB</button><button class="secondary target" data-kb="500">500 KB</button><button class="secondary target" data-kb="1024">1 MB</button></div><label>Quality <span id="qval">60</span>%</label><input id="quality" class="range" type="range" min="20" max="85" value="60"><div class="row"><button id="compressBtn">Compress & Download</button></div><div id="compressStatus" class="status"></div></div>
