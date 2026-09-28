@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JPG to PDF Converter - PDFReady</title>
+<meta name="description" content="Convert JPG and PNG images to PDF online for free. Fast and easy JPG to PDF converter.">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f5f7fb;color:#172033}
+header{background:#111827;color:#fff;padding:18px 6%;font-weight:700;font-size:22px}
+main{max-width:850px;margin:auto;padding:35px 16px}
+.card{background:#fff;border-radius:18px;padding:25px;box-shadow:0 8px 30px #0001}
+h1{text-align:center;font-size:36px}
+.sub{text-align:center;color:#667085}
+.drop{display:block;border:2px dashed #6366f1;border-radius:15px;padding:40px;text-align:center;margin:25px 0;cursor:pointer}
+input[type=file]{display:none}
+button{background:#4f46e5;color:white;border:0;padding:13px 20px;border-radius:10px;font-weight:bold;cursor:pointer}
+button:disabled{background:#aaa;cursor:not-allowed}
+#files{margin:15px 0;color:#475467}
+.success{margin-top:15px;color:#067647;font-weight:bold}
+.back{display:inline-block;margin-top:20px;color:#4f46e5;text-decoration:none}
+</style>
+</head>
+
+<body>
+
+<header>PDFReady — Free PDF Tools</header>
+
+<main>
+<div class="card">
+
+<h1>JPG to PDF Converter</h1>
+
+<p class="sub">
+Convert JPG, JPEG or PNG images into a PDF for free.
+</p>
+
+<label class="drop" for="images">
+<div style="font-size:45px">📷</div>
+<strong>Click here to choose images</strong>
+<br><br>
+<span>JPG, JPEG or PNG</span>
+</label>
+
+<input id="images" type="file" accept="image/jpeg,image/png" multiple>
+
+<div id="files">No images selected.</div>
+
+<button id="convert" disabled>Convert to PDF</button>
+
+<div id="status"></div>
+
+<a class="back" href="./">← Back to PDFReady</a>
+
+</div>
+</main>
+
+<script>
+const input=document.getElementById("images");
+const filesBox=document.getElementById("files");
+const button=document.getElementById("convert");
+const status=document.getElementById("status");
+
+let selected=[];
+
+input.addEventListener("change",()=>{
+selected=Array.from(input.files);
+
+if(selected.length===0){
+filesBox.textContent="No images selected.";
+button.disabled=true;
+return;
+}
+
+filesBox.innerHTML="<b>"+selected.length+" image(s) selected:</b><br>"+
+selected.map(x=>"• "+x.name).join("<br>");
+
+button.disabled=false;
+status.textContent="";
+});
+
+button.addEventListener("click",async()=>{
+if(!selected.length)return;
+
+button.disabled=true;
+status.textContent="Creating PDF...";
+
+try{
+const {jsPDF}=window.jspdf;
+
+let pdf=null;
+
+for(let i=0;i<selected.length;i++){
+
+const file=selected[i];
+
+const dataUrl=await new Promise((resolve,reject)=>{
+const reader=new FileReader();
+reader.onload=()=>resolve(reader.result);
+reader.onerror=reject;
+reader.readAsDataURL(file);
+});
+
+const img=await new Promise((resolve,reject)=>{
+const image=new Image();
+image.onload=()=>resolve(image);
+image.onerror=reject;
+image.src=dataUrl;
+});
+
+let orientation=img.width>img.height?"landscape":"portrait";
+
+if(i===0){
+pdf=new jsPDF({
+orientation:orientation,
+unit:"mm",
+format:"a4"
+});
+}else{
+pdf.addPage("a4",orientation);
+}
+
+const pageW=pdf.internal.pageSize.getWidth();
+const pageH=pdf.internal.pageSize.getHeight();
+
+const margin=10;
+const maxW=pageW-margin*2;
+const maxH=pageH-margin*2;
+
+let w=img.width;
+let h=img.height;
+
+const ratio=Math.min(maxW/w,maxH/h);
+
+w*=ratio;
+h*=ratio;
+
+const x=(pageW-w)/2;
+const y=(pageH-h)/2;
+
+pdf.addImage(
+dataUrl,
+file.type==="image/png"?"PNG":"JPEG",
+x,y,w,h
+);
+}
+
+pdf.save("PDFReady-JPG-to-PDF.pdf");
+
+status.className="success";
+status.textContent="✅ PDF created successfully!";
+}catch(error){
+console.error(error);
+status.textContent="❌ Something went wrong. Please try again.";
+}
+
+button.disabled=false;
+});
+</script>
+
+</body>
+</html>
