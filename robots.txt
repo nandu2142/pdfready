@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://nandu2142.github.io/pdfready/sitemap.xml
